@@ -87,15 +87,15 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8001',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/storage': {
-        target: 'http://127.0.0.1:8001',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/broadcasting': {
-        target: 'http://127.0.0.1:8001',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         ws: true,
       },

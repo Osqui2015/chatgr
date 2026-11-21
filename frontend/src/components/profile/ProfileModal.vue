@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import AvatarCropper from '@/components/profile/AvatarCropper.vue'
 import PresenceIndicator from '@/components/PresenceIndicator.vue'
@@ -21,9 +22,11 @@ const emit = defineEmits<{
 }>()
 
 const auth = useAuthStore()
+const router = useRouter()
 
 const nickname = ref('')
 const saving = ref(false)
+const loggingOut = ref(false)
 const errorMessage = ref('')
 const notice = ref('')
 
@@ -70,6 +73,26 @@ watch(
   },
   { immediate: true },
 )
+
+/**
+ * End the session and return to the login screen.
+ */
+async function endSession(): Promise<void> {
+  loggingOut.value = true
+  errorMessage.value = ''
+
+  try {
+    await auth.logout()
+
+    emit('close')
+
+    await router.push({ name: 'login' })
+  } catch (error) {
+    errorMessage.value = error instanceof ApiError ? error.message : 'No se pudo cerrar la sesión.'
+  } finally {
+    loggingOut.value = false
+  }
+}
 
 /**
  * Choose an avatar file and open the cropper.
@@ -333,11 +356,23 @@ async function changeRole(role: SexualRole): Promise<void> {
               </div>
             </div>
 
-            <div class="border-t border-border pt-4 text-xs text-text-subtle">
-              <p v-if="auth.user?.email">Correo: {{ auth.user.email }}</p>
-              <p v-if="auth.user?.created_at">
-                Miembro desde {{ new Date(auth.user.created_at).toLocaleDateString('es') }}
+            <div class="border-t border-border pt-4">
+              <p v-if="auth.user?.email" class="text-xs text-text-subtle">
+                Correo: {{ auth.user.email }}
               </p>
+              <p v-if="auth.user?.created_at" class="text-xs text-text-subtle">
+                Miembro desde
+                {{ new Date(auth.user.created_at).toLocaleDateString('es') }}
+              </p>
+
+              <button
+                type="button"
+                class="btn-danger mt-4 w-full"
+                :disabled="loggingOut"
+                @click="endSession"
+              >
+                {{ loggingOut ? 'Cerrando sesión...' : 'Cerrar sesión' }}
+              </button>
             </div>
           </div>
         </div>

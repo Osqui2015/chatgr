@@ -34,7 +34,7 @@ export interface RealtimeHandlers {
   onPresence: (payload: PresencePayload) => void
 }
 
-let echo: Echo<'reverb'> | null = null
+let echo: Echo<'pusher'> | null = null
 let handlers: RealtimeHandlers | null = null
 
 /**
@@ -43,22 +43,17 @@ let handlers: RealtimeHandlers | null = null
  * The authentication request carries the session cookie, so the server can
  * resolve the user without exposing a token to the browser.
  */
-function createEcho(): Echo<'reverb'> {
-  const key = import.meta.env.VITE_REVERB_APP_KEY as string
-  const host = import.meta.env.VITE_REVERB_HOST as string
-  const port = Number(import.meta.env.VITE_REVERB_PORT as string)
-  const scheme = (import.meta.env.VITE_REVERB_SCHEME as string) ?? 'http'
+function createEcho(): Echo<'pusher'> {
+  const key = import.meta.env.VITE_PUSHER_APP_KEY as string
+  const cluster = (import.meta.env.VITE_PUSHER_APP_CLUSTER as string) ?? 'sa1'
 
   window.Pusher = Pusher
 
   return new Echo({
-    broadcaster: 'reverb',
+    broadcaster: 'pusher',
     key,
-    wsHost: host,
-    wsPort: port,
-    wssPort: port,
-    forceTLS: scheme === 'https',
-    enabledTransports: ['ws', 'wss'],
+    cluster,
+    forceTLS: true,
     authEndpoint: '/broadcasting/auth',
     auth: {
       headers: {
@@ -174,6 +169,6 @@ export function disconnectRealtime(): void {
 /**
  * The Echo instance, for components that need direct access.
  */
-export function realtime(): Echo<'reverb'> | null {
+export function realtime(): Echo<'pusher'> | null {
   return echo
 }

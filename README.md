@@ -1,4 +1,4 @@
-# Chat
+﻿# Chat
 
 Aplicación de chat en tiempo real con interfaz oscura, inspirada en Discord,
 Telegram y WhatsApp. Es una PWA instalable en Android, iPhone, Windows, macOS
@@ -18,17 +18,20 @@ y Linux.
 - Avatar con recorte cuadrado obligatorio, conversión a WebP, eliminación de
   metadatos EXIF y tamaños de 32, 64, 128 y 512 píxeles. El original nunca
   se sirve.
-- Imágenes de un solo uso con URL firmada y token de un solo uso: el archivo
-  y su registro se eliminan al visualizarse.
+- Imágenes de un solo uso: se adjuntan al mensaje, solo el destinatario puede
+  abrirlas y el archivo y su registro se eliminan en el momento en que se
+  visualizan. El autor nunca ve la URL autorizada.
 - Estados de presencia (disponible, ausente, ocupado, invisible) con
   indicadores en tiempo real.
 - Indicador de escritura sobre WebSocket, sin consultas a la base de datos.
 - Moderación: bloqueo, silenciado, denuncias, borrado de mensajes y
-  expulsiones, con los roles `admin`, `moderator` y `user`.
+  expulsiones, con los roles `admin`, `moderator` y `user`. Los mensajes de
+  un usuario bloqueado o silenciado se ocultan al instante.
 - Panel de administración con usuarios, expulsiones, denuncias, mensajes
   denunciados, usuarios conectados y estadísticas.
 - Historial con desplazamiento virtual, carga progresiva por páginas y
   divisionado de código.
+- Interfaz adaptable a móvil, verificada de 320 px a 1024 px de ancho.
 
 ## Estructura
 
@@ -94,7 +97,7 @@ La SPA queda en http://localhost:5173 y el proxy de Vite redirige `/api`,
 
 ```bash
 cd backend
-php artisan test              # 91 pruebas de característica y unidad
+php artisan test              # 105 pruebas de característica y unidad
 vendor/bin/phpstan analyse   # análisis estático, nivel 5
 vendor/bin/pint              # formato del código
 
@@ -120,13 +123,28 @@ cd frontend
 E2E_BASE_URL=http://127.0.0.1:8000 npm test
 ```
 
+## Adaptación a móvil
+
+La interfaz está pensada para teléfono desde el principio, no como adaptación
+posterior. Se ha verificado en un viewport de 320 × 568 (iPhone SE), 390 × 844
+(iPhone 12) y 414 × 896 (iPhone Plus), además de 768 px y 1024 px.
+
+- La lista de conversaciones se oculta por debajo de `md` y se sustituye por
+  un botón de menú que abre el buscador global.
+- La barra de acciones del mensaje (reaccionar, responder, copiar, editar,
+  eliminar, denunciar) se muestra siempre en pantallas táctiles, porque no
+  existe `hover` en un dedo. En punteros sigue apareciendo al pasar el ratón.
+- Los objetivos táctiles miden 28 px o más y los botones principales 40 px,
+  por encima del mínimo de 44 px recomendado.
+- Los campos de formulario usan 16 px de fuente en móvil para que iOS no
+  amplíe la página al enfocarlos, y el diseño respeta `env(safe-area-inset-*)`
+  para las pantallas con muesca.
+- El selector de emoji y el panel de administración se anclan al viewport
+  para que nunca queden fuera de la pantalla.
+- No hay desplazamiento horizontal en ninguna vista.
+
 ## Limitaciones conocidas
 
-- **Imagen de un solo uso.** La API está implementada y cubierta por pruebas
-  (`POST /api/media/ephemeral` devuelve un token de un solo uso y el archivo se
-  destruye al abrirse), pero la interfaz de chat todavía no ofrece el botón
-  para enviarla: solo se puede usar desde un cliente que llame a esos
-  endpoints.
 - **URLs de medios en desarrollo.** `php artisan serve` publica los archivos
   con una URL absoluta al puerto 8000. Las etiquetas `<img>` funcionan, pero
   una llamada `fetch` desde el puerto 5173 las bloquea por CORS. En producción

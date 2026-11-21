@@ -158,7 +158,7 @@ function insertEmoji(emoji: string): void {
 </script>
 
 <template>
-  <div class="border-t border-border bg-surface">
+  <div class="relative border-t border-border bg-surface">
     <div v-if="replyTo" class="flex items-center gap-2 border-b border-border px-4 py-2 text-xs">
       <div class="min-w-0 flex-1 border-l-2 border-accent pl-2">
         <p class="font-semibold text-accent">{{ replyTo.user?.nickname ?? 'Desconocido' }}</p>
@@ -268,13 +268,6 @@ function insertEmoji(emoji: string): void {
             <path d="M9 9.5h.01M15 9.5h.01" stroke-linecap="round" />
           </svg>
         </button>
-
-        <EmojiPicker
-          v-if="showEmoji"
-          class="bottom-12 left-0 z-30"
-          @select="insertEmoji"
-          @close="showEmoji = false"
-        />
       </div>
 
       <textarea
@@ -320,6 +313,17 @@ function insertEmoji(emoji: string): void {
         @change="onFileChange"
       />
     </div>
+
+    <!--
+      The picker is anchored to the composer, not to the button, so it stays
+      inside the viewport on narrow screens.
+    -->
+    <EmojiPicker
+      v-if="showEmoji"
+      class="absolute bottom-full left-3 right-3 z-30 mb-2"
+      @select="insertEmoji"
+      @close="showEmoji = false"
+    />
 
     <p class="px-4 pb-2 text-[11px] text-text-subtle">
       <template v-if="viewOnce">

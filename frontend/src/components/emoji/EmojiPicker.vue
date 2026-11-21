@@ -446,7 +446,7 @@ const results = computed(() => {
 </script>
 
 <template>
-  <div class="panel w-72 overflow-hidden text-sm" @click.stop>
+  <div class="panel w-[min(18rem,calc(100vw-2rem))] overflow-hidden text-sm" @click.stop>
     <div class="border-b border-border p-2">
       <input
         v-model="query"

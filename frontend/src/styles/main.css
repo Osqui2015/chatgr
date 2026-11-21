@@ -165,10 +165,13 @@
 
   /*
    * Form controls.
+   *
+   * The font is 16px on small screens: iOS zooms in on any input with a
+   * smaller font as soon as it gets the focus.
    */
   .field {
-    @apply w-full rounded-lg border border-border bg-surface-raised px-3.5 py-2.5 text-sm text-text
-      placeholder:text-text-subtle transition-colors focus:border-accent focus:outline-none;
+    @apply w-full rounded-lg border border-border bg-surface-raised px-3.5 py-2.5 text-base text-text
+      placeholder:text-text-subtle transition-colors focus:border-accent focus:outline-none sm:text-sm;
   }
 
   .field-error {

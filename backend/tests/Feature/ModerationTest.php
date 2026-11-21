@@ -101,7 +101,8 @@ class ModerationTest extends TestCase
 
         $this->actingAs($user)
             ->postJson("/api/users/{$target->id}/mute")
-            ->assertOk();
+            ->assertOk()
+            ->assertJsonPath('message', 'Usuario silenciado.');
 
         $this->assertDatabaseHas('mutes', [
             'user_id' => $user->id,
@@ -110,7 +111,8 @@ class ModerationTest extends TestCase
 
         $this->actingAs($user)
             ->deleteJson("/api/users/{$target->id}/mute")
-            ->assertOk();
+            ->assertOk()
+            ->assertJsonPath('message', 'Usuario reactivado.');
 
         $this->assertDatabaseMissing('mutes', [
             'user_id' => $user->id,

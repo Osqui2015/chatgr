@@ -247,7 +247,7 @@ class UserController extends Controller
         $this->moderation->unmute($request->user(), $user);
 
         return response()->json([
-            'message' => 'Usuario silenciado.',
+            'message' => 'Usuario reactivado.',
         ]);
     }
 }
