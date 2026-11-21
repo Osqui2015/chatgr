@@ -1,0 +1,194 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens
+ *
+ * The palette is a dark, low contrast set inspired by Discord and Telegram
+ * Desktop: a near black canvas, slightly lighter surfaces and a single
+ * indigo accent.
+ */
+@theme {
+  --color-canvas: #0b0d11;
+  --color-surface: #14171d;
+  --color-surface-raised: #1b1f27;
+  --color-surface-overlay: #232833;
+  --color-border: #272c36;
+  --color-border-strong: #363d4a;
+
+  --color-text: #e6e9ef;
+  --color-text-muted: #9aa4b2;
+  --color-text-subtle: #6b7480;
+
+  --color-accent: #5865f2;
+  --color-accent-hover: #4752e4;
+  --color-accent-soft: #5865f226;
+
+  --color-success: #3ba55d;
+  --color-warning: #faa61a;
+  --color-danger: #ed4245;
+  --color-info: #3aa0d8;
+
+  --radius-panel: 0.75rem;
+  --radius-bubble: 1rem;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --animate-fade-in: fade-in 0.18s ease-out;
+  --animate-slide-up: slide-up 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-pop: pop 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*
+ * Base layer
+ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-text font-sans antialiased;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /*
+   * The app is installed full screen (`viewport-fit=cover`), so the safe area
+   * insets keep the content away from the notch and the home indicator.
+   */
+  #app {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  ::selection {
+    @apply bg-accent/40;
+  }
+
+  /* A slim, unobtrusive scrollbar that matches the dark theme. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-border-strong;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-subtle;
+  }
+
+  /* Visible focus for keyboard users only. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+/*
+ * The primary button shell. Registered as a utility so the variants below
+ * can `@apply btn` (Tailwind v4 does not allow applying a plain component
+ * class).
+ */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium
+    transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@layer components {
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent-hover;
+  }
+
+  .btn-secondary {
+    @apply btn bg-surface-raised text-text hover:bg-surface-overlay;
+  }
+
+  .btn-ghost {
+    @apply btn text-text-muted hover:bg-surface-raised hover:text-text;
+  }
+
+  .btn-danger {
+    @apply btn bg-danger/15 text-danger hover:bg-danger/25;
+  }
+
+  /*
+   * Form controls.
+   */
+  .field {
+    @apply w-full rounded-lg border border-border bg-surface-raised px-3.5 py-2.5 text-sm text-text
+      placeholder:text-text-subtle transition-colors focus:border-accent focus:outline-none;
+  }
+
+  .field-error {
+    @apply border-danger;
+  }
+
+  /*
+   * The card surface used by modals and popovers.
+   */
+  .panel {
+    @apply rounded-panel border border-border bg-surface-raised shadow-2xl;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

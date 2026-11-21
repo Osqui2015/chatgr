@@ -1,0 +1,28 @@
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Build and generated output
+**/dist/
+**/dist-ssr/
+**/dev-dist/
+**/build/
+**/public/build/
+
+# Logs and local caches
+*.log
+**/.phpunit.result.cache
+**/.phpunit.cache/
+**/.vite/
+
+# Local tooling
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
